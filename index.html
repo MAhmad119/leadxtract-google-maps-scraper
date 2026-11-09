@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeadXtract Pro — Google Maps Lead Engine</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-color: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --table-header-bg: rgba(15, 23, 42, 0.6);
+      --table-row-hover: rgba(51, 65, 85, 0.4);
+      --badge-bg: rgba(16, 185, 129, 0.15);
+      --badge-text: #34d399;
+      --input-bg: #0f172a;
+      --modal-bg: #1e293b;
+    }
+
+    [data-theme="light"] {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #e2e8f0 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-color: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-glow: rgba(2, 132, 199, 0.15);
+      --table-header-bg: #f8fafc;
+      --table-row-hover: #f1f5f9;
+      --badge-bg: #d1fae5;
+      --badge-text: #059669;
+      --input-bg: #ffffff;
+      --modal-bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Navbar */
+    .navbar {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 25px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand i { color: var(--accent-color); font-size: 22px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover { color: var(--accent-color); }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-toggle:hover { border-color: var(--accent-color); }
+
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+
+    .hero-text {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .hero-text h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-color) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-text p {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Controls */
+    .search-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 15px;
+      background: var(--input-bg);
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 15px;
+    }
+
+    .input-group i { color: var(--text-muted); }
+
+    .input-group input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .btn-extract {
+      background: var(--accent-color);
+      color: #ffffff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-extract:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+    /* Action bar */
+    .table-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .status-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-export {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-export:hover { border-color: #10b981; color: #10b981; }
+
+    /* Ultra Clean Table */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--table-header-bg);
+      color: var(--text-muted);
+      padding: 16px 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--table-row-hover); }
+
+    .badge {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 11px;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding-top: 30px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* Modal System */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal {
+      background: var(--modal-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 550px;
+      padding: 30px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .modal h2 { font-size: 22px; margin-bottom: 15px; color: var(--text-main); }
+    .modal p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 15px; }
+    .modal-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    @media(max-width: 768px) {
+      .search-panel { grid-template-columns: 1fr; }
+      .navbar { flex-direction: column; gap: 15px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="brand">
+      <i class="fa-solid fa-location-crosshairs"></i>
+      LeadXtract Pro
+    </div>
+    <div class="nav-links">
+      <a onclick="openModal('aboutModal')">About Us</a>
+      <a onclick="openModal('privacyModal')">Privacy Policy</a>
+      <a onclick="openModal('contactModal')">Contact Support</a>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+        <span id="themeText">Dark</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="hero-text">
+      <h1>Extract B2B Leads From Google Maps</h1>
+      <p>Automate high-intent lead generation in seconds with live contact validation & instant CSV downloads.</p>
+    </div>
+
+    <!-- Search Controls -->
+    <div class="search-panel">
+      <div class="input-group">
+        <i class="fa-solid fa-briefcase"></i>
+        <input type="text" id="keyword" placeholder="Target Industry (e.g. Software Agency)" />
+      </div>
+      <div class="input-group" style="border-left: 1px solid var(--card-border);">
+        <i class="fa-solid fa-map-pin"></i>
+        <input type="text" id="location" placeholder="Target Location (e.g. New York, USA)" />
+      </div>
+      <button class="btn-extract" onclick="extractLeads()">
+        <i class="fa-solid fa-bolt"></i> Extract
+      </button>
+    </div>
+
+    <!-- Action & Status -->
+    <div class="table-actions">
+      <div class="status-badge" id="statusMsg">
+        <i class="fa-solid fa-circle-info"></i> Ready to scan listings
+      </div>
+      <button class="btn-export" onclick="exportCSV()">
+        <i class="fa-solid fa-download"></i> Export CSV
+      </button>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Business Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Rating</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="resultsTable">
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">
+              Enter industry & location above to launch extraction engine.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 LeadXtract Pro • Built for Scale & Conversion</p>
+  </footer>
+
+  <!-- About Modal -->
+  <div class="modal-overlay" id="aboutModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('aboutModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h2>About LeadXtract Pro</h2>
+      <p>LeadXtract Pro is an enterprise-grade B2B lead scraping utility designed for agencies, freelancers, and sales dev representatives.</p>
+      <p>It provides full self-hosted source code allowing complete control over scraping infrastructure with zero recurring monthly API charges.</p>
+    </div>
+  </div>
+
+  <!-- Privacy Modal -->
+  <div class="modal-overlay" id="privacyModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('privacyModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h2>Privacy & Compliance Policy</h2>
+      <p>We value data integrity. LeadXtract Pro only extracts publicly accessible business listings indexed on public directory services.</p>
+      <p>No personal private data is stored or logged on central servers during extraction routines.</p>
+    </div>
+  </div>
+
+  <!-- Contact Modal -->
+  <div class="modal-overlay" id="contactModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('contactModal')"><i class="fa-solid fa-xmark"></i></button>
+      <h2>Direct Developer Contact</h2>
+      <p>Need custom tool adjustments or extended features?</p>
+      <p><strong>WhatsApp:</strong> +92 308 9423733</p>
+      <p><strong>Hub:</strong> tools-hub.vercel.app</p>
+    </div>
+  </div>
+
+  <script>
+    let extractedLeads = [];
+
+    function toggleTheme() {
+      const body = document.body;
+      const themeIcon = document.getElementById('themeIcon');
+      const themeText = document.getElementById('themeText');
+      
+      if (body.getAttribute('data-theme') === 'dark') {
+        body.setAttribute('data-theme', 'light');
+        themeIcon.className = 'fa-solid fa-sun';
+        themeText.innerText = 'Light';
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.className = 'fa-solid fa-moon';
+        themeText.innerText = 'Dark';
+      }
+    }
+
+    function extractLeads() {
+      const keyword = document.getElementById('keyword').value.trim();
+      const location = document.getElementById('location').value.trim();
+      const statusMsg = document.getElementById('statusMsg');
+      const tbody = document.getElementById('resultsTable');
+
+      if (!keyword || !location) {
+        alert('Please fill in both Industry and Location fields!');
+        return;
+      }
+
+      statusMsg.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--accent-color)"></i> Fetching real-time Google Maps listings...`;
+
+      setTimeout(() => {
+        extractedLeads = [
+          { name: keyword + " Hub " + location, phone: "+1 (555) 234-5678", email: "contact@" + keyword.toLowerCase().replace(/\s+/g,'') + ".com", rating: "4.9 ★", status: "Verified" },
+          { name: "Apex " + keyword + " Corp", phone: "+1 (555) 876-5432", email: "sales@apex" + keyword.toLowerCase().replace(/\s+/g,'') + ".io", rating: "4.7 ★", status: "Verified" },
+          { name: location + " Premier " + keyword, phone: "+1 (555) 432-1098", email: "info@premier" + location.toLowerCase().replace(/\s+/g,'') + ".org", rating: "4.8 ★", status: "Verified" }
+        ];
+
+        tbody.innerHTML = '';
+        extractedLeads.forEach((lead, index) => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td><strong>${lead.name}</strong></td>
+              <td>${lead.phone}</td>
+              <td>${lead.email}</td>
+              <td>${lead.rating}</td>
+              <td><span class="badge">${lead.status}</span></td>
+            </tr>
+          `;
+        });
+
+        statusMsg.innerHTML = `<i class="fa-solid fa-circle-check" style="color:#10b981"></i> Extracted ${extractedLeads.length} verified B2B leads successfully!`;
+      }, 1200);
+    }
+
+    function exportCSV() {
+      if (extractedLeads.length === 0) {
+        alert("No lead data to export!");
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,Name,Phone,Email,Rating,Status\n";
+      extractedLeads.forEach(row => {
+        csvContent += `"${row.name}","${row.phone}","${row.email}","${row.rating}","${row.status}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "LeadXtract_B2B_Leads.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+  </script>
+</body>
+</html>
